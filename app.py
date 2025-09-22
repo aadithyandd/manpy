@@ -16,13 +16,16 @@ MAPPING = {
     "elenki": "else",
     "koduku": "return",
     "sheriya": "True",
+    "sheri" : "True",   
     "sheriyalla": "False",
     "illa": "None",
     "pinne": "elif",
     "mathi": "pass",
     "nok": "try",
     "avasanam": "finally",
-    "ppd": "def"
+    "ppd": "def",
+    "ithinu": "for",
+    "appol": "while"
 }
 
 def translate(code):
