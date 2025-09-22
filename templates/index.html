@@ -219,7 +219,7 @@
             }
 
             function indentSelection(text, selStart, selEnd, indentStr) {
-                // Indent every line in selection by prefixing indentStr
+                
                 const startLine = getLineStart(text, selStart);
                 const endLine = (text.indexOf('\n', selEnd) === -1) ? text.length : text.indexOf('\n', selEnd) + 1;
                 const part = text.substring(startLine, endLine);
@@ -244,7 +244,6 @@
                     const m = lines[i].match(/^ {0,}/);
                     const removeCount = Math.min(m[0].length, indentSize);
                     if (startLine + removedTotalBeforeSelStart <= selStart && selStart <= startLine + removedTotalBeforeSelStart + lines[i].length) {
-                        // not exact, but OK — we won't compute precise selection shift per-line, we estimate
                     }
                     lines[i] = lines[i].substring(removeCount);
                     removedTotal += removeCount;
@@ -252,7 +251,6 @@
                 const replaced = lines.join('\n');
                 return {
                     text: text.substring(0, startLine) + replaced + text.substring(endLine),
-                    // approximate new selection: shrink selection by removedTotal (good enough)
                     newSelStart: Math.max(startLine, selStart - indentSize),
                     newSelEnd: Math.max(startLine, selEnd - removedTotal)
                 };
@@ -262,29 +260,25 @@
                 const TAB = 9;
                 const key = e.key || e.keyCode;
 
-                // TAB and Shift+TAB handling
                 if (key === 'Tab' || key === TAB) {
                     e.preventDefault();
-                    const indentStr = '    '; // 4 spaces
+                    const indentStr = '    '; 
                     const val = this.value;
                     const start = this.selectionStart;
                     const end = this.selectionEnd;
 
                     if (e.shiftKey) {
-                        // Unindent selected lines
                         const result = unindentSelection(val, start, end, indentStr.length);
                         this.value = result.text;
                         this.selectionStart = result.newSelStart;
                         this.selectionEnd = result.newSelEnd;
                     } else {
-                        // If there's a selection and it covers multiple lines, indent all lines
                         if (start !== end && val.substring(start, end).indexOf('\n') !== -1) {
                             const result = indentSelection(val, start, end, indentStr);
                             this.value = result.text;
                             this.selectionStart = result.newSelStart;
                             this.selectionEnd = result.newSelEnd;
                         } else {
-                            // simple insert 4 spaces at caret
                             this.value = replaceRange(val, start, end, indentStr);
                             this.selectionStart = this.selectionEnd = start + indentStr.length;
                         }
@@ -292,7 +286,6 @@
                     return;
                 }
 
-                // ENTER key handling
                 if (key === 'Enter' || key === 'Return' || key === 13) {
                     e.preventDefault();
 
@@ -300,39 +293,32 @@
                     const start = this.selectionStart;
                     const end = this.selectionEnd;
 
-                    // compute current line (text before caret since last \n)
                     const lineStart = getLineStart(val, start);
                     const lineBeforeCursor = val.substring(lineStart, start);
 
-                    // get leading whitespace of current line
                     const indentMatch = lineBeforeCursor.match(/^\s*/);
                     const currentIndent = indentMatch ? indentMatch[0] : '';
 
-                    // If the trimmed current line ends with ':' then add extra indent
                     const trimmed = lineBeforeCursor.trimEnd();
                     const extra = trimmed.endsWith(':') ? '    ' : '';
 
                     const insert = '\n' + currentIndent + extra;
 
-                    // Replace selection (if any) with the new line + indentation
                     const newValue = replaceRange(val, start, end, insert);
                     this.value = newValue;
 
-                    // place cursor after the inserted indentation
                     const caretPos = start + insert.length;
                     this.selectionStart = this.selectionEnd = caretPos;
                     return;
                 }
             });
 
-            // Optional: a small helper to trim trailing spaces (just for neatness)
             document.getElementById('formatBtn').addEventListener('click', function () {
                 const val = textarea.value;
                 const lines = val.split('\n').map(l => l.replace(/\s+$/, ''));
                 textarea.value = lines.join('\n');
             });
 
-            // If you want, focus the textarea on page load and place caret at end
             textarea.focus();
             textarea.setSelectionRange(textarea.value.length, textarea.value.length);
 
