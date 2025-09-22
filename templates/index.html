@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>MANPy</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Pixelify+Sans:wght@400..700&display=swap');
+    </style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+    </style>
+    <style>
+        body {
+            font-family: "Pixelify Sans", sans-serif;
+            padding: 20px;
+            background: #0c1225;
+            color: #ffffff;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        form {
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            width: 85%;
+            height: 320px;
+            font-family: "Google Sans Code", monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 0px solid #ddd;
+            border-radius: 6px;
+            background: #1f172f;
+            white-space: pre;
+            resize: vertical;
+            tab-size: 4;
+            outline: none;
+            color: rgb(255, 255, 255);
+        }
+
+        .controls {
+            width: 85%;
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .rbutton {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            background: #f6f6f6;
+            cursor: pointer;
+            background-color: #50ce70;
+            border: none;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .rbutton:hover {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            background: #f6f6f6;
+            cursor: pointer;
+            background-color: #a3f1c6;
+            border: none;
+            box-shadow: 0 4px 8px #a3f1c6;
+            transform: scale(1.2);
+        }
+
+        .tbutton {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            background: #f6f6f6;
+            cursor: pointer;
+            background-color: #50ce70;
+            border: none;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .tbutton:hover {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #bbb;
+            background: #f6f6f6;
+            cursor: pointer;
+            background-color: #a3f1c6;
+            border: none;
+            box-shadow: 0 4px 8px #a3f1c6;
+            transform: scale(1.2);
+        }
+
+
+        pre.output {
+            text-align: left;
+            background: #301e56;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 6px;
+            min-height: 80px;
+            white-space: pre-wrap;
+            width: 85%;
+        }
+
+        .hint {
+            color: #666;
+            font-size: 13px;
+            margin-left: 6px;
+        }
+
+        .title {
+            font-size: 88px;
+            margin-bottom: 8px;
+        }
+
+        .inst {
+            font-family: "Google Sans Code", monospace;
+            text-align: left;
+            max-width: 600px;
+            background: #bdbdbd;
+            color: #101010;
+            padding-top: 0px;
+            padding-left: 22px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+
+        .inst_tit {
+            font-size: 34px;
+            color: #ffffff
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h1 class="title"> MANPy </h1>
+        <form method="POST" id="runForm">
+            <textarea id="code" name="code" spellcheck="false" autocomplete="off" autocorrect="off"
+                autocapitalize="off">{{ code|e }}</textarea>
+
+            <div class="controls">
+                <button type="submit" class="rbutton">▶ Run</button>
+                <button type="button" id="formatBtn" class="tbutton">⤾ Trim Spaces</button>
+            </div>
+        </form>
+
+        <h3>Output</h3>
+        <pre class="output" id="output">{{ output|e }}</pre>
+        <br><br><br>
+        <span class="inst_tit">Instructions</span><br><br>
+        <div class="inst">
+            <p>1. Use the keywords of MANPy language to write code.</p>
+            <p>2. Press the "Run" button to execute the code.</p>
+            <p>3. You can't use "input" function in this version, the website will reload if you try to use the function
+            </p>
+            <h3>Keywords : </h3>
+            <p>
+                ipo = if
+
+                alenki = else
+
+                nadakumbo = while
+
+                kaniku = print
+
+                kanik = print
+
+                nirthu = break
+
+                elenki = else
+
+                koduku = return
+
+                sheriya = True
+
+                sheriyalla = False
+
+                illa = None
+
+                pinne = elif
+
+                mathi = pass
+
+                nok = try
+
+                avasanam = finally
+
+                ppd = def</p>
+        </div>
+    </center>
+    <script>
+        (function () {
+            const textarea = document.getElementById("code");
+
+            function replaceRange(text, start, end, insert) {
+                return text.substring(0, start) + insert + text.substring(end);
+            }
+
+            function getLineStart(text, pos) {
+                return Math.max(0, text.lastIndexOf('\n', pos - 1) + 1);
+            }
+
+            function indentSelection(text, selStart, selEnd, indentStr) {
+                // Indent every line in selection by prefixing indentStr
+                const startLine = getLineStart(text, selStart);
+                const endLine = (text.indexOf('\n', selEnd) === -1) ? text.length : text.indexOf('\n', selEnd) + 1;
+                const part = text.substring(startLine, endLine);
+                const lines = part.split('\n');
+                for (let i = 0; i < lines.length; i++) lines[i] = indentStr + lines[i];
+                const replaced = lines.join('\n');
+                return {
+                    text: text.substring(0, startLine) + replaced + text.substring(endLine),
+                    newSelStart: selStart + indentStr.length,
+                    newSelEnd: selEnd + indentStr.length * lines.length
+                };
+            }
+
+            function unindentSelection(text, selStart, selEnd, indentSize) {
+                const startLine = getLineStart(text, selStart);
+                const endLine = (text.indexOf('\n', selEnd) === -1) ? text.length : text.indexOf('\n', selEnd) + 1;
+                const part = text.substring(startLine, endLine);
+                const lines = part.split('\n');
+                let removedTotalBeforeSelStart = 0;
+                let removedTotal = 0;
+                for (let i = 0; i < lines.length; i++) {
+                    const m = lines[i].match(/^ {0,}/);
+                    const removeCount = Math.min(m[0].length, indentSize);
+                    if (startLine + removedTotalBeforeSelStart <= selStart && selStart <= startLine + removedTotalBeforeSelStart + lines[i].length) {
+                        // not exact, but OK — we won't compute precise selection shift per-line, we estimate
+                    }
+                    lines[i] = lines[i].substring(removeCount);
+                    removedTotal += removeCount;
+                }
+                const replaced = lines.join('\n');
+                return {
+                    text: text.substring(0, startLine) + replaced + text.substring(endLine),
+                    // approximate new selection: shrink selection by removedTotal (good enough)
+                    newSelStart: Math.max(startLine, selStart - indentSize),
+                    newSelEnd: Math.max(startLine, selEnd - removedTotal)
+                };
+            }
+
+            textarea.addEventListener('keydown', function (e) {
+                const TAB = 9;
+                const key = e.key || e.keyCode;
+
+                // TAB and Shift+TAB handling
+                if (key === 'Tab' || key === TAB) {
+                    e.preventDefault();
+                    const indentStr = '    '; // 4 spaces
+                    const val = this.value;
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+
+                    if (e.shiftKey) {
+                        // Unindent selected lines
+                        const result = unindentSelection(val, start, end, indentStr.length);
+                        this.value = result.text;
+                        this.selectionStart = result.newSelStart;
+                        this.selectionEnd = result.newSelEnd;
+                    } else {
+                        // If there's a selection and it covers multiple lines, indent all lines
+                        if (start !== end && val.substring(start, end).indexOf('\n') !== -1) {
+                            const result = indentSelection(val, start, end, indentStr);
+                            this.value = result.text;
+                            this.selectionStart = result.newSelStart;
+                            this.selectionEnd = result.newSelEnd;
+                        } else {
+                            // simple insert 4 spaces at caret
+                            this.value = replaceRange(val, start, end, indentStr);
+                            this.selectionStart = this.selectionEnd = start + indentStr.length;
+                        }
+                    }
+                    return;
+                }
+
+                // ENTER key handling
+                if (key === 'Enter' || key === 'Return' || key === 13) {
+                    e.preventDefault();
+
+                    const val = this.value;
+                    const start = this.selectionStart;
+                    const end = this.selectionEnd;
+
+                    // compute current line (text before caret since last \n)
+                    const lineStart = getLineStart(val, start);
+                    const lineBeforeCursor = val.substring(lineStart, start);
+
+                    // get leading whitespace of current line
+                    const indentMatch = lineBeforeCursor.match(/^\s*/);
+                    const currentIndent = indentMatch ? indentMatch[0] : '';
+
+                    // If the trimmed current line ends with ':' then add extra indent
+                    const trimmed = lineBeforeCursor.trimEnd();
+                    const extra = trimmed.endsWith(':') ? '    ' : '';
+
+                    const insert = '\n' + currentIndent + extra;
+
+                    // Replace selection (if any) with the new line + indentation
+                    const newValue = replaceRange(val, start, end, insert);
+                    this.value = newValue;
+
+                    // place cursor after the inserted indentation
+                    const caretPos = start + insert.length;
+                    this.selectionStart = this.selectionEnd = caretPos;
+                    return;
+                }
+            });
+
+            // Optional: a small helper to trim trailing spaces (just for neatness)
+            document.getElementById('formatBtn').addEventListener('click', function () {
+                const val = textarea.value;
+                const lines = val.split('\n').map(l => l.replace(/\s+$/, ''));
+                textarea.value = lines.join('\n');
+            });
+
+            // If you want, focus the textarea on page load and place caret at end
+            textarea.focus();
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+
+        })();
+        const outputEl = document.getElementById("output");
+        hljs.highlightElement(outputEl);
+
+    </script>
+</body>
+
+</html>
