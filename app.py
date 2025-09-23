@@ -30,7 +30,6 @@ MAPPING = {
 
 def translate(code):
     for manglish, py in MAPPING.items():
-        # Replace only full words, not substrings
         code = re.sub(rf'\b{manglish}\b', py, code)
     return code
 
@@ -41,7 +40,6 @@ def index():
     if request.method == "POST":
         code = request.form["code"]
 
-        # Translate Manglish -> Python
         python_code = translate(code)
 
         old_stdout = sys.stdout
