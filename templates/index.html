@@ -119,6 +119,11 @@
             font-size: 13px;
             margin-left: 6px;
         }
+        .hint2 {
+            color: #666;
+            font-size: 9px;
+            text-align: center;
+        }
 
         .title {
             font-size: 88px;
@@ -164,7 +169,7 @@
         <div class="inst">
             <p>1. Use the keywords of MANPy language to write code.</p>
             <p>2. Press the "Run" button to execute the code.</p>
-            <p>3. You can't use "input" function in this version, the website will reload if you try to use the function
+            <p>3. You <span style="color:red;">can't</span> use "input" function in this version, the website will reload if you try to use the function
             </p>
             <h3>Keywords : </h3>
             <p>
@@ -199,12 +204,18 @@
                 avasanam = finally
 
                 ppd = def
-                
+
                 ithinu = for
 
                 appol = while
+
             </p>
+            <br>
+            <p class="hint2">Note : This is a demo website, most of the main fucntions are still under development ⚠️</p>
+
         </div>
+        <br><br><br>
+        <span class="hint">Made by : Aadithyan.D</span>
     </center>
     <script>
         (function () {
@@ -219,7 +230,6 @@
             }
 
             function indentSelection(text, selStart, selEnd, indentStr) {
-                
                 const startLine = getLineStart(text, selStart);
                 const endLine = (text.indexOf('\n', selEnd) === -1) ? text.length : text.indexOf('\n', selEnd) + 1;
                 const part = text.substring(startLine, endLine);
@@ -262,7 +272,7 @@
 
                 if (key === 'Tab' || key === TAB) {
                     e.preventDefault();
-                    const indentStr = '    '; 
+                    const indentStr = '    ';
                     const val = this.value;
                     const start = this.selectionStart;
                     const end = this.selectionEnd;
